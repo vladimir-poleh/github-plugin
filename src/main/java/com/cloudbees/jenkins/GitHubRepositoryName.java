@@ -140,8 +140,7 @@ public class GitHubRepositoryName {
     public boolean matches(GHCommitPointer commit) {
         try {
             return userName.equals(commit.getUser().getLogin())
-                && repositoryName.equals(commit.getRepository().getName())
-                && host.equals(new URL(commit.getRepository().getUrl()).getHost());
+                && repositoryName.equals(commit.getRepository().getName());
         } catch (MalformedURLException e) {
             return false;
         }
@@ -152,8 +151,7 @@ public class GitHubRepositoryName {
      */
     public boolean matches(GHRepository repo) throws IOException {
         return userName.equals(repo.getOwner().getLogin()) // TODO: use getOwnerName
-            && repositoryName.equals(repo.getName())
-            && host.equals(new URL(repo.getUrl()).getHost());
+            && repositoryName.equals(repo.getName());
     }
 
     @Override
@@ -163,17 +161,17 @@ public class GitHubRepositoryName {
 
         GitHubRepositoryName that = (GitHubRepositoryName) o;
 
-        return repositoryName.equals(that.repositoryName) && userName.equals(that.userName) && host.equals(that.host);
+        return repositoryName.equals(that.repositoryName) && userName.equals(that.userName);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[] {host, userName, repositoryName});
+        return Arrays.hashCode(new Object[] {userName, repositoryName});
     }
 
     @Override
     public String toString() {
-        return "GitHubRepository[host="+host+",username="+userName+",repository="+repositoryName+"]";
+        return "GitHubRepository[username="+userName+",repository="+repositoryName+"]";
     }
 
     private static final Logger LOGGER = Logger.getLogger(GitHubRepositoryName.class.getName());
