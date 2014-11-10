@@ -7,7 +7,6 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -138,12 +137,8 @@ public class GitHubRepositoryName {
      * Does this repository match the repository referenced in the given {@link GHCommitPointer}?
      */
     public boolean matches(GHCommitPointer commit) {
-        try {
-            return userName.equals(commit.getUser().getLogin())
-                && repositoryName.equals(commit.getRepository().getName());
-        } catch (MalformedURLException e) {
-            return false;
-        }
+        return userName.equals(commit.getUser().getLogin())
+            && repositoryName.equals(commit.getRepository().getName());
     }
 
     /**
