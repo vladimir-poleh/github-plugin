@@ -9,7 +9,7 @@
   <groupId>com.coravy.hudson.plugins.github</groupId>
   <artifactId>github</artifactId>
   <packaging>hpi</packaging>
-  <version>1.10-SNAPSHOT-NOHOSTSv2</version>
+  <version>1.11.3-NOHOSTS</version>
   <name>GitHub plugin</name>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Github+Plugin</url>
 
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>github-api</artifactId>
-      <version>1.42</version>
+      <version>1.67</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
@@ -60,6 +60,12 @@
       <version>0.2</version>
       <optional>true</optional>
     </dependency>
+    <dependency><!-- exists in the core -->
+      <groupId>org.jenkins-ci.modules</groupId>
+      <artifactId>instance-identity</artifactId>
+      <version>1.3</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -76,7 +82,7 @@
     <connection>scm:git:git://github.com/jenkinsci/github-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/github-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/github-plugin</url>
-    <tag>HEAD</tag>
+    <tag>github-1.11.3</tag>
   </scm>
 
   <repositories>
