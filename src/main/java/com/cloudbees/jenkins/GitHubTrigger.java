@@ -20,7 +20,7 @@ public interface GitHubTrigger {
     public void onPost();
 
     // TODO: document me
-    public void onPost(String triggeredByUser);
+    public void onPost(String triggeredByUser, String commit);
     /**
      * Obtains the list of the repositories that this trigger is looking at.
      *

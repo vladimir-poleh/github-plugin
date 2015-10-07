@@ -3,12 +3,8 @@ package com.cloudbees.jenkins;
 import hudson.Extension;
 import hudson.Util;
 import hudson.console.AnnotatedLargeText;
-import hudson.model.Action;
-import hudson.model.Hudson;
+import hudson.model.*;
 import hudson.model.Hudson.MasterComputer;
-import hudson.model.Item;
-import hudson.model.AbstractProject;
-import hudson.model.Project;
 import hudson.triggers.Trigger;
 import hudson.triggers.TriggerDescriptor;
 import hudson.util.FormValidation;
@@ -53,6 +49,8 @@ import javax.inject.Inject;
  * @author Kohsuke Kawaguchi
  */
 public class GitHubPushTrigger extends Trigger<AbstractProject<?,?>> implements GitHubTrigger {
+    private static final String COMMIT_HASH_VARIABLE = "GITHUB_COMMIT_HASH";
+
     @DataBoundConstructor
     public GitHubPushTrigger() {
     }
@@ -62,14 +60,15 @@ public class GitHubPushTrigger extends Trigger<AbstractProject<?,?>> implements 
      */
     @Deprecated
     public void onPost() {
-        onPost("");
+        onPost("", "");
     }
 
     /**
      * Called when a POST is made.
      */
-    public void onPost(String triggeredByUser) {
+    public void onPost(String triggeredByUser, String commit) {
         final String pushBy = triggeredByUser;
+        final String commitHash = commit;
         getDescriptor().queue.execute(new Runnable() {
             private boolean runPolling() {
                 try {
@@ -113,7 +112,15 @@ public class GitHubPushTrigger extends Trigger<AbstractProject<?,?>> implements 
                         LOGGER.log(Level.WARNING, "Failed to parse the polling log",e);
                         cause = new GitHubPushCause(pushBy);
                     }
-                    if (job.scheduleBuild(cause)) {
+
+                    Action action = new ParametersAction(new StringParameterValue(COMMIT_HASH_VARIABLE, commitHash));
+                    List<Action> actionsList = new ArrayList<Action>(job.getActions());
+                    actionsList.add(action);
+                    Action[] actions = new Action[actionsList.size()];
+                    actionsList.toArray(actions);
+
+                    LOGGER.fine("Scheduling Job");
+                    if (job.scheduleBuild(job.getQuietPeriod(), cause, actions)) {
                         LOGGER.info("SCM changes detected in "+ job.getName()+". Triggering "+name);
                     } else {
                         LOGGER.info("SCM changes detected in "+ job.getName()+". Job is already in the queue");
